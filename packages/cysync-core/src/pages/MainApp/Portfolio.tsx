@@ -4,22 +4,34 @@ import {
   ConnectionStatusType,
   SyncStatusType,
   Topbar,
+  Flex,
 } from '@cypherock/cysync-ui';
-import React, { FC, useState } from 'react';
-import { Dropdown } from '@cypherock/cysync-ui/src/components/atoms/Dropdown';
+import React, { FC, useEffect, useState } from 'react';
+
+import { openWalletActionsDialog } from '~/actions';
 import { AssetAllocation } from '~/pages/MainApp/Components/AssetAllocation';
-import { selectLanguage, useAppSelector } from '~/store';
+import {
+  openDialog,
+  selectLanguage,
+  useAppDispatch,
+  useAppSelector,
+} from '~/store';
 
 export const Portfolio: FC = () => {
   const lang = useAppSelector(selectLanguage);
+  const [showOnClose, setShowOnClose] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isLock, setIsLock] = useState<boolean>(true);
   const [haveNotifications, setHaveNotifications] = useState<boolean>(false);
   const [syncState, setSyncState] = useState<SyncStatusType>('syncronized');
   const [connectionState, setConnectionState] =
     useState<ConnectionStatusType>('connected');
+  const dispatch = useAppDispatch();
 
-  const options = ['1', '2', '3'];
+  useEffect(() => {
+    dispatch(openWalletActionsDialog());
+  }, []);
+
   return (
     <>
       <Topbar
@@ -32,7 +44,6 @@ export const Portfolio: FC = () => {
         connectionStatus={connectionState}
       />
       <AssetAllocation />
-      <Dropdown options={options} />
     </>
   );
 };
