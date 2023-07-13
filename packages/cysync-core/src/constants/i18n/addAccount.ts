@@ -76,6 +76,24 @@ const addAccount = {
         },
       },
     },
+    aside: {
+      tabs: {
+        asset: 'Asset',
+        device: 'Device',
+        confirmation: 'Confirmation',
+      },
+    },
+    congrats: {
+      info: {
+        dialogBox: {
+          title: 'Accounts added successfully',
+          header: 'Add Coin/Account',
+          subtext: 'Add other accounts or return to portfolio',
+          buttonName: 'Done',
+          secButtonName: 'Add more',
+        },
+      },
+    },
     noAccount: {
       info: {
         dialogBox: {

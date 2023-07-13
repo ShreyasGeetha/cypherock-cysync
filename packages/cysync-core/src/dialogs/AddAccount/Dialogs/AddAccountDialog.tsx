@@ -14,12 +14,15 @@ import {
 } from '@cypherock/cysync-ui';
 import React from 'react';
 import { useAppSelector } from '~/store';
+import { useAddAccountGuide } from '../context';
 
 export const AddAccountDialog: React.FC = () => {
   const lang = useAppSelector(state => state.addAccount.strings);
 
   const { title, header, subheader, submitButton, advanced, dataArray } =
     lang.addAccount.add.info.dialogBox;
+
+  const { onNext } = useAddAccountGuide();
 
   return (
     <DialogBox width={500} height={544}>
@@ -70,7 +73,7 @@ export const AddAccountDialog: React.FC = () => {
         </div>
       </DialogBoxBody>
       <DialogBoxFooter>
-        <Button variant="primary">
+        <Button onClick={onNext} variant="primary">
           <LangDisplay text={submitButton} />
         </Button>
       </DialogBoxFooter>

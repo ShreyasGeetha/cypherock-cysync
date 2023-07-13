@@ -4,11 +4,10 @@ import {
   ConnectionStatusType,
   SyncStatusType,
   Topbar,
-  Flex,
 } from '@cypherock/cysync-ui';
 import React, { FC, useEffect, useState } from 'react';
 
-import { openWalletActionsDialog } from '~/actions';
+import { openAddAccountDialog } from '~/actions';
 import { AssetAllocation } from '~/pages/MainApp/Components/AssetAllocation';
 import {
   openDialog,
@@ -29,7 +28,7 @@ export const Portfolio: FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(openWalletActionsDialog());
+    dispatch(openAddAccountDialog());
   }, []);
 
   return (
