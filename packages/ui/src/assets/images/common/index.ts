@@ -3,9 +3,8 @@ import addIcon from './add.svg';
 import arrowBlackBackward from './arrow-black-backward.svg';
 import arrowGoldenForward from './arrow-golden-forward.svg';
 import arrowWhiteBackward from './arrow-white-backward.svg';
-import assetSwith from './asset-switch.svg';
-import tabler_graph from './tabler_graph.svg';
 import asideIcon from './aside.svg';
+import assetSwith from './asset-switch.svg';
 import backIcon from './back.svg';
 import binanceIcon from './binance.svg';
 import bitcoinIcon from './bitcoin-icon.svg';
@@ -58,12 +57,13 @@ import shieldAlert from './shield-alert.svg';
 import solanaIcon from './solana.svg';
 import spinnerGoldIcon from './spinner-gold.svg';
 import successIcon from './success.svg';
+import tablerGraph from './tabler_graph.svg';
 import triangleInverseIcon from './triangle-inverse-icon.svg';
+import triangleGreyIcon from './triangleGrey.svg';
 import usbIcon from './usb.svg';
 import verifyCoinIcon from './verify-coin.svg';
 import walletErrorIcon from './wallet-error.svg';
 import walletIcon from './wallet.svg';
-import triangleGreyIcon from './triangleGrey.svg';
 
 export {
   addWalletIcon,
@@ -131,5 +131,5 @@ export {
   walletErrorIcon,
   bitcoinIcon,
   ethereumIcon,
-  tabler_graph
+  tablerGraph
 };

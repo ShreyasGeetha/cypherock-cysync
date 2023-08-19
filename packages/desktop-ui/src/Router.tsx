@@ -80,7 +80,7 @@ const BaseAppRouter: React.FC<{ children: ReactNode | undefined }> = ({
         <Route
           key={route.name}
           path={route.path}
-          element={components[route.name]}
+          element={components[route.name as RouteName]}
         />
       ))}
     </Routes>

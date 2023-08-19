@@ -1,125 +1,62 @@
 import {
-  AllocationShare,
   Container,
   LangDisplay,
   Typography,
-  ListContainer,
   Flex,
   assetSwith,
   Image,
   walletIcon,
   DropDownListItemProps,
   ImageProps,
-  bitcoinIcon,
   Button,
-  tabler_graph,
+  tablerGraph,
   Dropdown,
-  WalletIcon,
-  solanaIcon,
-  binanceIcon,
-  etheriumBlueIcon,
 } from '@cypherock/cysync-ui';
+import { font } from '@cypherock/cysync-ui/src/components/utils';
 import axios from 'axios';
-import React, { useEffect, useState ,useRef , useMemo } from 'react';
+import { StatsBar } from './graphItems/StatsBar';
 import { Chart, ChartData, ChartOptions } from 'chart.js/auto';
 // import 'chartjs-plugin-interaction'; // Import the interaction plugin
 import moment from 'moment'
+import {Graphdata} from "./GraphData"
+import { any, string } from 'prop-types';
+import React, { useEffect, useState ,useRef } from 'react';
+import { time } from 'console';
+import { type } from 'os';
 
 const url = `https://api.coingecko.com/api/v3/coins/curve-dao-token/market_chart?vs_currency=usd&days=365`
 
-type PriceDataTuple = [number, number];
+type PriceDataTuple = number[];
 
-interface DateObject {
-}
-interface ClickableComponentProps {
-  onClick: () => void;
-}
 
-const dropDownDataWithWallet: DropDownListItemProps[] = [
-  {
-    id: '51',
-    text: 'Official',
-    checkType: 'radio',
-    leftImage: <Image src={walletIcon} alt="wallet icon" />,
-  },
-  {
-    id: '52',
-    text: 'Cypherock Red',
-    checkType: 'radio',
-    leftImage: <Image src={walletIcon} alt="wallet icon" />,
-  },
-  {
-    id: '53',
-    text: 'Personal',
-    checkType: 'radio',
-    leftImage: <Image src={walletIcon} alt="wallet icon" />,
-  },
-  {
-    id: '54',
-    text: 'Business',
-    checkType: 'radio',
-    leftImage: <Image src={walletIcon} alt="wallet icon" />,
-  },
-];
+type DateObject = string[];
+
+
+
 
 export const LineChart: React.FC = () => {
 
-  const [pricedata, setPriceData] = useState<PriceDataTuple[]>([]);
-  const [dates, setDates] = useState<DateObject[]>([]);
+  const [pricedata, setPriceData] = useState<PriceDataTuple>([]);
+  const [dates, setDates] = useState<DateObject>([]);
+  const [timeValue ,setTimeValue ] = useState<keyof typeof Graphdata | undefined>('ALL')
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   let chartInstance: Chart | null = null;
 
-  const labels = dates // generateRandomDataArray(5,0,10)
-
-
-  function generateRandomDataArray(length:any, minValue:any, maxValue:any) {
-    const dataArray = [];
-  
-    for (let i = 0; i < length; i++) {
-      const randomNumber = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
-      dataArray.push(randomNumber);
-    }
-    // console.log('dataArray: ', dataArray);
-    return dataArray;
-  }
-  const data1: ChartData = {
-    labels: labels,
-    datasets: [
-      {
-        label: "Price",
-        data: pricedata ,// generateRandomDataArray(5,0,10),// [0 , 22.74, 15.56, 13.48, 18.62, 22.71, ],
-        borderColor: 'rgb(214, 0, 249)',
-        tension: 0.5,
-        fill: true,
-        pointRadius : 0,
-        hoverRadius :1,
-        // lineTension: 0.1,
-        backgroundColor: (context: any) => {
-          // Custom gradient logic
-          const chart = context.chart;
-          const ctx = chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, chart.height);
-          gradient.addColorStop(0, 'rgba(214, 0, 249, 0.6)'); // Start color (opacity 0.8)
-          gradient.addColorStop(1, 'rgba(214, 0, 249, 0)');   // End color (opacity 0)
-          return gradient;
-        },
-      },
-    ],
-  };
-  
 
   const options: ChartOptions = {
-    
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       y: {
-        // beginAtZero: true,
         ticks: {
-          maxTicksLimit: 5 // stepSize: 10, // Set the desired step size here (1 means show every label, 2 means show every other label, and so on)
+          maxTicksLimit: 4, // Set the number of ticks you want
+          stepSize: 1, 
+          // maxTicksLimit: 3,
+          // stepSize: 1  //  (Math.max(...pricedata) + Math.min(...pricedata))/5   //10, // Set the desired step size here (1 means show every label, 2 means show every other label, and so on)
         },
         grid: {
-         color: "#4B4B4B" // borderDash: [3, 3], // Creates a dotted line for grid lines
+          offset: true,
+          color: "#4B4B4B" // borderDash: [3, 3], // Creates a dotted line for grid lines
         },
         border: {
           dash: [10,10],
@@ -127,7 +64,8 @@ export const LineChart: React.FC = () => {
       },
       x: {
         ticks: {
-          maxTicksLimit: 5, // Set the desired step size here (1 means show every label, 2 means show every other label, and so on)
+          padding: 20,
+          maxTicksLimit: 6, // Set the desired step size here (1 means show every label, 2 means show every other label, and so on)
         },
         display: true,
         grid: {
@@ -162,47 +100,88 @@ export const LineChart: React.FC = () => {
   };
 
 
-  const onClick = () => {
-    console.log('e: ');
-  }
+  useEffect (()=>{
+    console.log('timeValue: ', timeValue);
+    let timeValues: keyof typeof Graphdata = timeValue || "ALL"; // 
+    setDates( Graphdata[timeValues].dates.map((date)=>{
+      return moment(date).format("MMM-DD")
+    }));
+    setPriceData(Graphdata[timeValues].prices);
+  },[timeValue])
+
+
   useEffect(() => {
-  axios.get(url).then((data : any )=>{
-    const sampleData =  data?.data?.prices
-    const timestamps = [];
-    const pricess = [];
-    for (const item of sampleData) {
-      const [timestamp, price] = item;
-      timestamps.push(moment(timestamp).format("MMM-DD"));
-      pricess.push(price);
-    }
-    setPriceData(pricess)
-    console.log('pricess: ', pricess);
-    setDates(timestamps)
-    console.log('timestamps: ', timestamps);
+
+        // setDates(['Aug-17', 'Aug-18', 'Aug-19', 'Aug-20', 'Aug-21', 'Aug-22', 'Aug-23', 'Aug-24', 'Aug-25', 'Aug-26' ])
+        setDates( Graphdata['ALL'].dates.map((date)=>{
+          return moment(date).format("MMM-DD")
+        }))
+        // timestamps = ['Aug-17', 'Aug-18', 'Aug-19', 'Aug-20', 'Aug-21', 'Aug-22', 'Aug-23' ]
+        // setPriceData(pricess)
+        setPriceData(Graphdata['ALL'].prices)
+        if (chartRef.current) {
+          if (chartInstance) {
+            chartInstance.destroy(); // Destroy previous chart instance if it exists
+          }
+          chartInstance = new Chart(chartRef.current, {
+            type: 'line',
+            data:  {
+              labels: dates,
+              datasets: [
+                {
+                  data: pricedata ,// generateRandomDataArray(5,0,10),// [0 , 22.74, 15.56, 13.48, 18.62, 22.71, ],
+                  borderColor: 'rgb(214, 0, 249)',
+                  borderWidth: 1,
+                  tension: 0.4,
+                  fill: true,
+                  pointRadius : 0,
+                  hoverRadius :1,
+                  backgroundColor: (context: any) => {
+                    // Custom gradient logic
+                    const {chart} = context;
+                    const {ctx} = chart;
+                    const gradient = ctx.createLinearGradient(0, 0, 0, chart.height);
+                    gradient.addColorStop(0, 'rgba(214, 0, 249, 0.6)'); // Start color (opacity 0.8)
+                    gradient.addColorStop(1, 'rgba(214, 0, 249, 0)');   // End color (opacity 0)
+                    return gradient;
+                  },
+                },
+              ],
+            },
+            options,
+          });
+        }
+        return () => {
+          if (chartInstance) {
+            chartInstance.destroy(); // Clean up the chart instance when the component unmounts
+          }
+        };
+  }, []);
+
+
+  useEffect(()=>{
+
     if (chartRef.current) {
       if (chartInstance) {
         chartInstance.destroy(); // Destroy previous chart instance if it exists
       }
-
-      
-
-      console.log('data1: ', data1);
       chartInstance = new Chart(chartRef.current, {
         type: 'line',
         data:  {
-          labels: timestamps,
+          labels: dates,
           datasets: [
             {
-              data: pricess ,// generateRandomDataArray(5,0,10),// [0 , 22.74, 15.56, 13.48, 18.62, 22.71, ],
+              data: pricedata ,// generateRandomDataArray(5,0,10),// [0 , 22.74, 15.56, 13.48, 18.62, 22.71, ],
               borderColor: 'rgb(214, 0, 249)',
-              tension: 1,
+              borderWidth: 1,
+              tension: 0.4,
               fill: true,
               pointRadius : 0,
               hoverRadius :1,
               backgroundColor: (context: any) => {
                 // Custom gradient logic
-                const chart = context.chart;
-                const ctx = chart.ctx;
+                const {chart} = context;
+                const {ctx} = chart;
                 const gradient = ctx.createLinearGradient(0, 0, 0, chart.height);
                 gradient.addColorStop(0, 'rgba(214, 0, 249, 0.6)'); // Start color (opacity 0.8)
                 gradient.addColorStop(1, 'rgba(214, 0, 249, 0)');   // End color (opacity 0)
@@ -211,21 +190,22 @@ export const LineChart: React.FC = () => {
             },
           ],
         },
-        options: options,
+        options,
       });
     }
-  }).catch((err)=>
-  {console.log('err: ', err)})
-
-    
-
 
     return () => {
       if (chartInstance) {
         chartInstance.destroy(); // Clean up the chart instance when the component unmounts
       }
     };
-  }, []);
+  },[pricedata , dates])
+
+
+  const setTimeValueFn = (time: keyof  typeof Graphdata  | undefined) =>{
+    setTimeValue(time)
+  }
+
 
   return (
           <Flex
@@ -233,114 +213,10 @@ export const LineChart: React.FC = () => {
           $bgColor="contentGradient"
           p={4}
           display="flex"
-          height="500px"
           >
-            <Container  display="flex" direction="row" justify="space-between" height="full">
-           
-           {/* left side top info  */}
-            <Container 
-            pl="40" 
-            pr="40" 
-            pt="32" 
-            pb="32" 
-            display="flex" direction="column">
-            <Container 
-            width='full'
-            justify= "flex-start"
-            >
-
-              <Container
-               pb="4" 
-               border-bottom="1px solid #2C2520"
-              width="fit-content" display="flex" direction="row"  align-items= "flex-start" justify= "flex-start" >
-                  <Typography
-                    variant="h3"
-                    $textAlign="left"
-                    $letterSpacing={0.05}
-                    pr={1}
-                    leading-trim='both'
-                    text-edge='cap'
-                    font-family='Poppins'
-                    font-size='32px'
-                    font-style='normal'
-                    font-weight='600'
-                    line-height='normal'
-                  >12.72 ETH
-                    {/* <LangDisplay 
-                  font-weight='600'
-                   text="12.72 ETH" /> */}
-                  </Typography>
-                      <Image2
-                      onClick={onClick}
-                      pl="16"
-                      src={assetSwith} 
-                      alt="logo" 
-                      />
-              </Container>
-            </Container>
-              <Container 
-              pt="4" 
-               gap={8} display="flex" direction="row" align-items= "flex-start"  justify="center">
-                <Typography
-                    color="muted"
-                    $textAlign="left"
-                    $letterSpacing={0.02}
-                    >$ 16032.087</Typography>
-                    <Typography
-                    color="muted"
-                    $textAlign="left"
-                    $letterSpacing={0.02}
-                    direction="row"
-                    display='flex'
-                    >
-                    <Flex 
-                     direction="row" display="block" align-items= "center" justify="center" >
-                      <Image
-                      align-items= "center"
-                      justify="center"
-                      position='relative'
-                      src={tabler_graph} 
-                      alt="logo" 
-                      $alignSelf="end"
-                      pr='8' />
-                    </Flex>1 ETH = $ 1,258.47</Typography>
-              </Container>
-            </Container>
-
-
-            {/* buttonns and Drop down */}
-              <Container  display="flex" direction="row" >
-              <Container width={246} gap={8} align-items="center">
-                          <Button border-radius='3px' icon='1D'variant="secondary"   size="sm"  />
-                          <Button border-radius='3px' icon='1W' variant="secondary"  size="sm"/>
-                          <Button border-radius='3px'  icon='1M' variant="secondary"  size="sm"/>
-                          <Button border-radius='3px'  icon='1Y' variant="secondary"  size="sm"/>
-                          <Button border-radius='3px'  icon='ALL' variant="secondary" size="sm"/>
-                      </Container>
-                      <Container
-                      width="250"
-                      // display="flex"
-                      height="24"
-                      p="12"
-                      justify-content= "space-between"
-                      // align-items= "center"
-                     >
-                      <Dropdown
-                        align-items= "center"
-                        justify-content= "space-between"
-                        items={dropDownDataWithWallet}
-                        selectedItem={"test"}
-                        disabled={false}
-                        searchText={"test"}
-                        placeholderText={"All Wallets"}
-                        onChange={onClick}
-                        leftImage={<Image src={walletIcon} alt="wallet icon" ml={3} />}
-                        />
-                    </Container>
-                </Container>
-            </Container>
-
-
+            <StatsBar
+            setTimeValueFn={setTimeValueFn}
+            />
             {/* mid line */} 
             <Container 
             display= "flex"
@@ -350,7 +226,7 @@ export const LineChart: React.FC = () => {
             align-items="center"
             justify='flex-start'>
               <svg height='15' width='15'>
-              <polygon points="8.66,0 0,15 17.32,15" fill='lime' stroke='purple' stroke-width='1px' />
+              <polygon points="8.66,0 0,15 17.32,15" fill='lime' stroke='purple' strokeWidth='1px' />
               Green Arrow
             </svg>
             <Typography
@@ -369,7 +245,10 @@ export const LineChart: React.FC = () => {
             </Container>
 
             {/* Graph  */}
-        <Container>
+        <Container
+        height={222}
+        
+        >
               <canvas  ref={chartRef} />
         </Container>
             </Flex>
@@ -381,32 +260,6 @@ Dropdown.defaultProps = {
   shouldShowIcon: true,
 };
 
-import styled from 'styled-components';
-import { string } from 'prop-types';
 
 
 
-interface graphImageProps extends ImageProps {
-  src: string;
-  alt: string;
-  onClick : any;
-}
-
-const StyledImage = styled.img<graphImageProps>`
-  display: flex;
-  width: 32px;
-  padding: 5px;
-  height: 32px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  border: 1.5px solid #45413E;
-  background: #39322C;
-  box-shadow: 4px 4px 32px 4px #0F0D0B;
-`;
-
-const Image2: React.FC<graphImageProps> = ({ onClick , src, alt ,...props }) => {
-  return <StyledImage {...props} onClick={onClick} src={src} alt={alt} />;
-};
-
-export default Image2;

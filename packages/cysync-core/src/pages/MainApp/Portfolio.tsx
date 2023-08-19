@@ -2,11 +2,11 @@ import React, { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { openWalletActionsDialog } from '~/actions';
-import { AssetAllocation , LineChart, MainAppLayout } from '~/pages/MainApp/Components';
-import { selectLanguage, useAppSelector } from '~/store';
+import { LineChart } from '~/pages/MainApp/Components';
+// import { selectLanguage, useAppSelector } from '~/store';
 
 export const Portfolio: FC = () => {
-  const { strings } = useAppSelector(selectLanguage);
+  // const { strings } = useAppSelector(selectLanguage);
   const dispatch = useDispatch();
 
   useEffect(() => {
