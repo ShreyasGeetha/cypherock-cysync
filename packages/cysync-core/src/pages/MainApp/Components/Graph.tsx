@@ -1,37 +1,34 @@
+
 import {
   Container,
   LangDisplay,
   Typography,
   Flex,
-  assetSwith,
-  Image,
-  walletIcon,
-  DropDownListItemProps,
-  ImageProps,
-  Button,
-  tablerGraph,
   Dropdown,
+  TriangleUpGreen,
 } from '@cypherock/cysync-ui';
-import { font } from '@cypherock/cysync-ui/src/components/utils';
-import axios from 'axios';
-import { StatsBar } from './graphItems/StatsBar';
-import { Chart, ChartData, ChartOptions } from 'chart.js/auto';
-// import 'chartjs-plugin-interaction'; // Import the interaction plugin
+import { Chart, ChartOptions } from 'chart.js/auto';
 import moment from 'moment'
-import {Graphdata} from "./GraphData"
-import { any, string } from 'prop-types';
 import React, { useEffect, useState ,useRef } from 'react';
-import { time } from 'console';
-import { type } from 'os';
 
-const url = `https://api.coingecko.com/api/v3/coins/curve-dao-token/market_chart?vs_currency=usd&days=365`
+import {Graphdata} from "./GraphData"
+import { StatsBar } from './graphItems/StatsBar';
+import { styled } from 'styled-components';
+
 
 type PriceDataTuple = number[];
 
 
 type DateObject = string[];
 
-
+const ChartTypography = styled(Typography)`
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22px;
+  text-align: right;
+  color: ${({theme}) => theme.palette.text.muted}
+`
 
 
 export const LineChart: React.FC = () => {
@@ -49,14 +46,12 @@ export const LineChart: React.FC = () => {
     scales: {
       y: {
         ticks: {
-          maxTicksLimit: 4, // Set the number of ticks you want
+          maxTicksLimit: 4, 
           stepSize: 1, 
-          // maxTicksLimit: 3,
-          // stepSize: 1  //  (Math.max(...pricedata) + Math.min(...pricedata))/5   //10, // Set the desired step size here (1 means show every label, 2 means show every other label, and so on)
         },
         grid: {
           offset: true,
-          color: "#4B4B4B" // borderDash: [3, 3], // Creates a dotted line for grid lines
+          color: "#4B4B4B" 
         },
         border: {
           dash: [10,10],
@@ -65,11 +60,11 @@ export const LineChart: React.FC = () => {
       x: {
         ticks: {
           padding: 20,
-          maxTicksLimit: 6, // Set the desired step size here (1 means show every label, 2 means show every other label, and so on)
+          maxTicksLimit: 6, 
         },
         display: true,
         grid: {
-          display: false, // Hide vertical grid lines on the x-axis
+          display: false, 
         },
       },
       
@@ -87,13 +82,11 @@ export const LineChart: React.FC = () => {
         },
        
     tooltip: {
-      // mode: 'index', // Show tooltip based on dataset index
-      // intersect: false, // Prevent hiding tooltip when hovering between points
-      mode: 'nearest', // Show tooltip for the nearest point on the curve
-      intersect: false, // Prevent hiding tooltip when hovering between points
+      mode: 'nearest', 
+      intersect: false, 
       callbacks: {
-        title: () => 'test', // Disable title (optional)
-        label: (context) => `Value: ${context.parsed.y}`, // Show the y-axis value in the tooltip
+        title: () => 'test', 
+        label: (context) => `Value: ${context.parsed.y}`, 
       },
     },
   },
@@ -101,27 +94,18 @@ export const LineChart: React.FC = () => {
 
 
   useEffect (()=>{
-    console.log('timeValue: ', timeValue);
-    let timeValues: keyof typeof Graphdata = timeValue || "ALL"; // 
-    setDates( Graphdata[timeValues].dates.map((date)=>{
-      return moment(date).format("MMM-DD")
-    }));
+    const timeValues: keyof typeof Graphdata = timeValue ?? "ALL"; 
+    setDates( Graphdata[timeValues].dates.map((date)=>moment(date).format("MMM-DD")));
     setPriceData(Graphdata[timeValues].prices);
   },[timeValue])
 
 
   useEffect(() => {
-
-        // setDates(['Aug-17', 'Aug-18', 'Aug-19', 'Aug-20', 'Aug-21', 'Aug-22', 'Aug-23', 'Aug-24', 'Aug-25', 'Aug-26' ])
-        setDates( Graphdata['ALL'].dates.map((date)=>{
-          return moment(date).format("MMM-DD")
-        }))
-        // timestamps = ['Aug-17', 'Aug-18', 'Aug-19', 'Aug-20', 'Aug-21', 'Aug-22', 'Aug-23' ]
-        // setPriceData(pricess)
-        setPriceData(Graphdata['ALL'].prices)
+        setDates( Graphdata.ALL.dates.map((date)=>moment(date).format("MMM-DD")))
+        setPriceData(Graphdata.ALL.prices)
         if (chartRef.current) {
           if (chartInstance) {
-            chartInstance.destroy(); // Destroy previous chart instance if it exists
+            chartInstance.destroy(); 
           }
           chartInstance = new Chart(chartRef.current, {
             type: 'line',
@@ -129,7 +113,7 @@ export const LineChart: React.FC = () => {
               labels: dates,
               datasets: [
                 {
-                  data: pricedata ,// generateRandomDataArray(5,0,10),// [0 , 22.74, 15.56, 13.48, 18.62, 22.71, ],
+                  data: pricedata ,
                   borderColor: 'rgb(214, 0, 249)',
                   borderWidth: 1,
                   tension: 0.4,
@@ -137,12 +121,11 @@ export const LineChart: React.FC = () => {
                   pointRadius : 0,
                   hoverRadius :1,
                   backgroundColor: (context: any) => {
-                    // Custom gradient logic
                     const {chart} = context;
                     const {ctx} = chart;
                     const gradient = ctx.createLinearGradient(0, 0, 0, chart.height);
-                    gradient.addColorStop(0, 'rgba(214, 0, 249, 0.6)'); // Start color (opacity 0.8)
-                    gradient.addColorStop(1, 'rgba(214, 0, 249, 0)');   // End color (opacity 0)
+                    gradient.addColorStop(0, 'rgba(214, 0, 249, 0.6)'); 
+                    gradient.addColorStop(1, 'rgba(214, 0, 249, 0)');   
                     return gradient;
                   },
                 },
@@ -153,7 +136,7 @@ export const LineChart: React.FC = () => {
         }
         return () => {
           if (chartInstance) {
-            chartInstance.destroy(); // Clean up the chart instance when the component unmounts
+            chartInstance.destroy(); 
           }
         };
   }, []);
@@ -163,7 +146,7 @@ export const LineChart: React.FC = () => {
 
     if (chartRef.current) {
       if (chartInstance) {
-        chartInstance.destroy(); // Destroy previous chart instance if it exists
+        chartInstance.destroy(); 
       }
       chartInstance = new Chart(chartRef.current, {
         type: 'line',
@@ -171,20 +154,27 @@ export const LineChart: React.FC = () => {
           labels: dates,
           datasets: [
             {
-              data: pricedata ,// generateRandomDataArray(5,0,10),// [0 , 22.74, 15.56, 13.48, 18.62, 22.71, ],
-              borderColor: 'rgb(214, 0, 249)',
+              data: pricedata ,
+              borderColor: (context: {chart: Chart}) => {
+                const { chart } = context;
+                const { ctx } = chart;
+                const gradient = ctx.createLinearGradient(0, 0, chart.width, 0);
+                gradient.addColorStop(0.0019, '#E9B873');
+                gradient.addColorStop(0.3717, '#FEDD8F');
+                gradient.addColorStop(1, '#B78D51');
+                return gradient;
+              },
               borderWidth: 1,
               tension: 0.4,
               fill: true,
               pointRadius : 0,
               hoverRadius :1,
-              backgroundColor: (context: any) => {
-                // Custom gradient logic
+              backgroundColor: (context: any) => {                
                 const {chart} = context;
                 const {ctx} = chart;
                 const gradient = ctx.createLinearGradient(0, 0, 0, chart.height);
-                gradient.addColorStop(0, 'rgba(214, 0, 249, 0.6)'); // Start color (opacity 0.8)
-                gradient.addColorStop(1, 'rgba(214, 0, 249, 0)');   // End color (opacity 0)
+                gradient.addColorStop(0, '#FFAC0A');
+                gradient.addColorStop(1, 'rgba(40, 37, 37, 0.00)');
                 return gradient;
               },
             },
@@ -196,7 +186,7 @@ export const LineChart: React.FC = () => {
 
     return () => {
       if (chartInstance) {
-        chartInstance.destroy(); // Clean up the chart instance when the component unmounts
+        chartInstance.destroy(); 
       }
     };
   },[pricedata , dates])
@@ -215,34 +205,20 @@ export const LineChart: React.FC = () => {
           display="flex"
           >
             <StatsBar
-            setTimeValueFn={setTimeValueFn}
+              setTimeValueFn={setTimeValueFn}
             />
             {/* mid line */} 
-            <Container 
-            display= "flex"
-            align-self= "stretch"
-            pl='40' width='full' 
-            gap={8} 
-            align-items="center"
-            justify='flex-start'>
-              <svg height='15' width='15'>
-              <polygon points="8.66,0 0,15 17.32,15" fill='lime' stroke='purple' strokeWidth='1px' />
-              Green Arrow
-            </svg>
-            <Typography
-                    color="muted"
-                    $textAlign="left"
-                    $letterSpacing={0.02}
-                    direction="row"
-                    display='flex'
-                    font-family='Poppins'
-                    align-self="stretch"
-                    gap={8} 
-                  >
-                    <LangDisplay  text="2.3%" />
-                    <LangDisplay  text="$ 00.321" />
-                  </Typography>
-            </Container>
+            <Flex px={5} pt={2}>
+              <Flex gap={8} align='center'>
+                <TriangleUpGreen />
+                <ChartTypography>
+                  <LangDisplay text='2.3%' />
+                </ChartTypography>
+                <ChartTypography >
+                  <LangDisplay text='$00.321' />
+                </ChartTypography>
+              </Flex>
+            </Flex>
 
             {/* Graph  */}
         <Container

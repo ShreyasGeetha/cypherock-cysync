@@ -1,172 +1,130 @@
 
     import {
-  Container,
   LangDisplay,
   Typography,
   Flex,
-  assetSwith,
-  Image,
-  walletIcon,
-  DropDownListItemProps,
-  ImageProps,
-  Button,
-  tablerGraph,
-  Dropdown,
+  WalletGray,
+  TriangleInverseIcon,
 } from '@cypherock/cysync-ui';
+import { goldenGradient } from '@cypherock/cysync-ui/src/components/utils';
 import React from 'react'
-import Image2 from './GraphSwitch';
+import { styled } from 'styled-components';
+
 import { Graphdata } from '../GraphData';
 
-
-const dropDownDataWithWallet: DropDownListItemProps[] = [
-    {
-      id: '51',
-      text: 'Official',
-      checkType: 'radio',
-      leftImage: <Image src={walletIcon} alt="wallet icon" />,
-    },
-    {
-      id: '52',
-      text: 'Cypherock Red',
-      checkType: 'radio',
-      leftImage: <Image src={walletIcon} alt="wallet icon" />,
-    },
-    {
-      id: '53',
-      text: 'Personal',
-      checkType: 'radio',
-      leftImage: <Image src={walletIcon} alt="wallet icon" />,
-    },
-    {
-      id: '54',
-      text: 'Business',
-      checkType: 'radio',
-      leftImage: <Image src={walletIcon} alt="wallet icon" />,
-    },
-  ];
   export interface StatsBarProps {
     setTimeValueFn:   (time: keyof typeof Graphdata | undefined) => void;
   }
-    export const StatsBar:React.FC<StatsBarProps> = ({ setTimeValueFn  }) => {
 
+  const FilterDataContainer = styled.div`
+  display: flex;
+  padding: var(--32-px, 32px) 40px var(--16-px, 16px) 40px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;  
+  border-bottom: 1px solid ${({theme}) => theme.palette.border.popup};
+  `;
 
+const ButtonContainer = styled.div<{ selected?: boolean }>`
+  display: flex;
+  width: auto;
+  padding: 4px 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 1.5px solid ${({theme}) => theme.palette.border.separator};
+  cursor: pointer;
+  position: relative;
 
-        const onSelector = (value:keyof typeof Graphdata) => {
-            console.log('e: ', value);
-            setTimeValueFn(value)
-          }
-          const assetSwithClick =(value:string) =>{
-            console.log('value: ', value);
-          }
-          const onClickDropDown = () => {
-            console.log('Dropdown Selected');
-          }
-      return (
-        <Container  display="flex" direction="row" justify="space-between" height="full">
-           
-        {/* left side top info  */}
-         <Container 
-         pl="40" 
-         pr="40" 
-         pt="32" 
-         pb="32" 
-         display="flex" direction="column">
-         <Container 
-         width='full'
-         justify= "flex-start"
-         >
-
-           <Container
-            pb="4" 
-            border-bottom="1px solid #2C2520"
-           width="fit-content" display="flex" direction="row"  align-items= "flex-start" justify= "flex-start" >
-               <Typography
-                 variant="h3"
-                 $textAlign="left"
-                 $letterSpacing={0.05}
-                 pr={1}
-                 leading-trim='both'
-                 text-edge='cap'
-                 // $fontFamily={font:'Poppins'}
-                 // font-size='32px'
-                 $fontSize={32}
-                 font-style='normal'
-                 $fontWeight={'semibold'}
-                 line-height='normal'
-               >12.72 ETH
-                 {/* <LangDisplay 
-               font-weight='600'
-                text="12.72 ETH" /> */}
-               </Typography>
-                   <Image2
-                   onClick={assetSwithClick}
-                   pl="16"
-                   src={assetSwith} 
-                   alt="logo" 
-                   />
-           </Container>
-         </Container>
-           <Container 
-           pt="4" 
-            gap={8} display="flex" direction="row" align-items= "flex-start"  justify="center">
-             <Typography
-                 color="muted"
-                 $textAlign="left"
-                 $letterSpacing={0.02}
-                 >$ 16032.087</Typography>
-                 <Typography
-                 color="muted"
-                 $textAlign="left"
-                 $letterSpacing={0.02}
-                 direction="row"
-                 display='flex'
-                 >
-                 <Flex 
-                  direction="row" display="block" align-items= "center" justify="center" >
-                   <Image
-                   align-items= "center"
-                   justify="center"
-                   position='relative'
-                   src={tablerGraph} 
-                   alt="logo" 
-                   $alignSelf="end"
-                   pr='8' />
-                 </Flex>1 ETH = $ 1,258.47</Typography>
-           </Container>
-         </Container>
-
-
-         {/* buttonns and Drop down */}
-           <Container  display="flex" direction="row" >
-           <Container width={246} gap={8} align-items="center">
-                       <Button border-radius='3px' onClick={()=>onSelector('1D')} icon='1D'variant="secondary"   size="sm"  />
-                       <Button border-radius='3px' onClick={()=>onSelector('1W')} icon='1W' variant="secondary"  size="sm"/>
-                       <Button border-radius='3px' onClick={()=>onSelector('1M')} icon='1M' variant="secondary"  size="sm"/>
-                       <Button border-radius='3px' onClick={()=>onSelector('1Y')} icon='1Y' variant="secondary"  size="sm"/>
-                       <Button border-radius='3px' onClick={()=>onSelector('ALL')} icon='ALL' variant="secondary" size="sm"/>
-                   </Container>
-                   <Container
-                   width="250"
-                   // display="flex"
-                   height="24"
-                   p="12"
-                   justify-content= "space-between"
-                   // align-items= "center"
-                  >
-                   <Dropdown
-                     align-items= "center"
-                     justify-content= "space-between"
-                     items={dropDownDataWithWallet}
-                     selectedItem="test"
-                     disabled={false}
-                     searchText="test"
-                     placeholderText="All Wallets"
-                     onChange={onClickDropDown}
-                     leftImage={<Image src={walletIcon} alt="wallet icon" ml={3} />}
-                     />
-                 </Container>
-             </Container>
-         </Container>
-      )
+  ${({ selected, theme }) => selected && `
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      border: 1.5px solid transparent;
+      background: ${theme.palette.golden} border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
     }
-    
+    ${goldenGradient('color')}
+  `}
+`;
+
+const GraphDropdown = styled.div`
+  display: flex;
+  width: 200px;
+  height: 44px;
+  padding: 12px 24px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid ${({theme}) => theme.palette.border.separator};
+  background: ${({theme}) => theme.palette.background.separatorSecondary};
+`;
+
+const GraphControl = styled(Flex)`
+  flex-direction: column;
+  @media ${({theme}) => theme.screens.lg} {
+    flex-direction: row;
+  }
+  @media ${({theme}) => theme.screens.md} {
+    align-items: flex-end;
+  }
+`;
+
+type ButtonName = '1D' | '1W' | '1M' | '1Y' | 'ALL';
+const buttons: ButtonName[] = ['1D', '1W', '1M', '1Y', 'ALL'];
+
+export const StatsBar:React.FC<StatsBarProps> = ({ setTimeValueFn  }) => {
+  const [selectedButton, setSelectedButton] = React.useState<ButtonName | null>(null); // Add this line
+
+  const handleSelector = (value: ButtonName) => {
+    setSelectedButton(value);
+    setTimeValueFn(value as keyof typeof Graphdata);
+  }
+
+  return (
+    <FilterDataContainer>
+      <Flex direction='column' gap={8}>
+        <Typography $fontSize={32} $fontWeight='semibold'>
+          <LangDisplay text="$12.74" />
+        </Typography>
+        <Typography $fontSize={16} $fontWeight='medium' color='muted' $letterSpacing={0.05}>
+          <LangDisplay text="Total Balance" />
+        </Typography>
+      </Flex>
+
+      <GraphControl gap={24} align='center'>
+        <Flex gap={8} align='center'>
+          {
+            buttons.map((buttonName, index) => (
+              <ButtonContainer 
+                key={`button-${index+1}`} 
+                onClick={()=>handleSelector(`${buttonName}`)}
+                selected={buttonName === selectedButton} 
+              >
+                <Typography $fontSize={16} $fontWeight='medium'>
+                  <LangDisplay text={buttonName} />
+                </Typography>                
+              </ButtonContainer>
+            ))
+          }
+        </Flex>
+        <GraphDropdown>
+          <Flex gap={16} align='center'>
+            <WalletGray />
+            <Typography color='muted'>
+              <LangDisplay text='All Wallets'/>
+            </Typography>
+          </Flex>
+          <TriangleInverseIcon />
+        </GraphDropdown>
+
+      </GraphControl>
+    </FilterDataContainer>
+  )
+}
