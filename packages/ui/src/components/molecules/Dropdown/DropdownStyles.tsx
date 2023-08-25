@@ -22,6 +22,7 @@ export const List = styled.ul<{ disabled?: boolean }>`
 `;
 
 export const DropdownListItem = styled.li<{ $isFocused?: boolean }>`
+  position: relative;
   background-color: ${({ theme, $isFocused }) =>
     $isFocused
       ? theme.palette.background.dropdownHover
@@ -70,12 +71,10 @@ export const DropdownContainer = styled.div<{
           outline: none;
           background: ${theme.palette.golden};
         }
-      `}
-
-  input {
+      `}/* input {
     padding-right: 30px;
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  }
+  } */
 `;
 
 export const IconContainer = styled.div`

@@ -180,7 +180,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         )}
       </IconContainer>
 
-      {isOpen && (
+      {true && (
         <List
           ref={listRef}
           onMouseLeave={toggleDropdown}

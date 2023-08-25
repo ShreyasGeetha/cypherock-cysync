@@ -25,6 +25,7 @@ export interface DropDownListItemProps extends BorderProps {
   shortForm?: string;
   rightTextVariant?: TypographyProps['variant'];
   checkType?: 'checkbox' | 'radio';
+  leftCheckType?: 'checkbox';
   id?: string;
   onClick?: () => void;
   checked?: boolean;
@@ -143,6 +144,7 @@ export const DropDownListItem: FC<DropDownListItemProps> = ({
   checkType = undefined,
   checked = false,
   $hasRightText = false,
+  leftCheckType,
   id,
   color,
   onClick,
@@ -177,6 +179,13 @@ export const DropDownListItem: FC<DropDownListItemProps> = ({
             checked={checked}
             value={radioButtonValue}
             onChange={handleCheckChange}
+          />
+        )}
+        {!$restrictedItem && leftCheckType && (
+          <CheckBox
+            checked={checked}
+            onChange={handleCheckChange}
+            id={id ?? 'default-id'}
           />
         )}
         {leftImage && (
@@ -232,6 +241,7 @@ DropDownListItem.defaultProps = {
   radioButtonValue: '',
   rightTextVariant: 'fineprint',
   checkType: undefined,
+  leftCheckType: undefined,
   id: undefined,
   tag: undefined,
   onClick: undefined,
